@@ -86,7 +86,7 @@ const Auctions = () => {
                                 >
                                     <div className="flex justify-between mb-1">
                                         <span className="font-mono font-bold text-slate-700">{loan.loanId}</span>
-                                        <span className="text-red-600 font-bold">${loan.currentBalance} Due</span>
+                                        <span className="text-red-600 font-bold">₹{loan.currentBalance} Due</span>
                                     </div>
                                     <div className="text-sm text-slate-600 mb-1">
                                         {loan.customer?.name} • {loan.customer?.phone}
@@ -115,7 +115,7 @@ const Auctions = () => {
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-600 mb-1">Sale Amount ($)</label>
+                                    <label className="block text-sm font-medium text-slate-600 mb-1">Sale Amount (₹)</label>
                                     <input
                                         type="number"
                                         required

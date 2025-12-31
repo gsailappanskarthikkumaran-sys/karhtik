@@ -117,11 +117,11 @@ const Payments = () => {
                         </div>
                         <div className="detail-row">
                             <span className="detail-label">Loan Amount</span>
-                            <span className="detail-value">${loan.loanAmount}</span>
+                            <span className="detail-value">₹{loan.loanAmount}</span>
                         </div>
                         <div className="detail-row">
                             <span className="detail-label">Balance</span>
-                            <span className="detail-value text-red-600">${loan.currentBalance}</span>
+                            <span className="detail-value text-red-600">₹{loan.currentBalance}</span>
                         </div>
                         <div className="detail-row">
                             <span className="detail-label">Scheme</span>
@@ -164,7 +164,7 @@ const Payments = () => {
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="form-label">Amount ($)</label>
+                                    <label className="form-label">Amount (₹)</label>
                                     <input
                                         type="number"
                                         className="input-field"
@@ -222,7 +222,7 @@ const Payments = () => {
                                         </div>
                                         <div className="payment-right" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                             <div className="payment-amount text-green-600">
-                                                +${p.amount}
+                                                +₹{p.amount}
                                             </div>
                                             <button
                                                 onClick={() => window.open(`/print/payment/${p._id}`, '_blank')}

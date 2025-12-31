@@ -112,7 +112,7 @@ const CustomerDetails = () => {
                     <div className="stat-box">
                         <label>Total Pledged</label>
                         <div className="stat-value text-green-600">
-                            ${activeLoans.reduce((acc, curr) => acc + curr.loanAmount, 0)}
+                            ₹{activeLoans.reduce((acc, curr) => acc + curr.loanAmount, 0)}
                         </div>
                     </div>
                 </div>
@@ -155,7 +155,7 @@ const CustomerDetails = () => {
                                         <tr key={l._id} className="cursor-pointer hover:bg-gray-50" onClick={() => navigate('/loans')}>
                                             <td className="font-mono">{l.loanId}</td>
                                             <td>{new Date(l.createdAt).toLocaleDateString()}</td>
-                                            <td className="font-bold">${l.loanAmount}</td>
+                                            <td className="font-bold">₹{l.loanAmount}</td>
                                             <td><span className={`status-pill status-${l.status}`}>{l.status}</span></td>
                                             <td className="text-sm text-gray-500">{l.totalWeight}g</td>
                                         </tr>
@@ -180,7 +180,7 @@ const CustomerDetails = () => {
                                         <tr key={l._id}>
                                             <td className="font-mono">{l.loanId}</td>
                                             <td>{new Date(l.createdAt).toLocaleDateString()}</td>
-                                            <td>${l.loanAmount}</td>
+                                            <td>₹{l.loanAmount}</td>
                                             <td>{new Date(l.updatedAt).toLocaleDateString()}</td>
                                         </tr>
                                     ))}

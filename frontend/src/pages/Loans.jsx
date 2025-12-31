@@ -80,8 +80,8 @@ const Loans = () => {
                                         </td>
                                         <td>{loan.scheme?.schemeName}</td>
                                         <td>{new Date(loan.createdAt).toLocaleDateString()}</td>
-                                        <td className="amount-cell">${loan.loanAmount}</td>
-                                        <td style={{ color: '#64748b' }}>${loan.valuation}</td>
+                                        <td className="amount-cell">₹{loan.loanAmount}</td>
+                                        <td style={{ color: '#64748b' }}>₹{loan.valuation}</td>
                                         <td>
                                             <span className={`status-badge status-${loan.status}`}>
                                                 {loan.status}
@@ -96,7 +96,10 @@ const Loans = () => {
                                             >
                                                 <Printer size={18} />
                                             </button>
-                                            <button className="action-arrow-btn">
+                                            <button
+                                                className="action-arrow-btn"
+                                                onClick={() => window.open(`/print/loan/${loan._id}`, '_blank')}
+                                            >
                                                 <ChevronRight size={18} />
                                             </button>
                                         </td>

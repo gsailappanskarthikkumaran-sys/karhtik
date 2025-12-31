@@ -91,7 +91,7 @@ const LoanReceipt = ({ loan }) => (
             <div className="text-right">
                 <div className="detail-group mb-4">
                     <label>Amount</label>
-                    <div className="text-2xl font-bold">${loan.loanAmount}</div>
+                    <div className="text-2xl font-bold">₹{loan.loanAmount}</div>
                 </div>
                 <div className="detail-group mb-4">
                     <label>Scheme</label>
@@ -238,7 +238,7 @@ const PaymentReceipt = ({ payment }) => (
             <div className="grid-2 gap-y-6">
                 <div className="detail-group">
                     <label>Amount Paid</label>
-                    <div className="text-2xl font-bold">${payment.amount}</div>
+                    <div className="text-2xl font-bold">₹{payment.amount}</div>
                 </div>
                 <div className="detail-group">
                     <label>Payment Type</label>

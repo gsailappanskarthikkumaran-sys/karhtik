@@ -98,7 +98,7 @@ const Masters = () => {
 
                     <form onSubmit={handleGoldRateSubmit} className="form-stack">
                         <div className="form-group">
-                            <label className="form-label">22k Rate (per gram) ($)</label>
+                            <label className="form-label">22k Rate (per gram) (₹)</label>
                             <input
                                 type="number"
                                 className="input-field"
@@ -109,7 +109,7 @@ const Masters = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">24k Rate (per gram) ($)</label>
+                            <label className="form-label">24k Rate (per gram) (₹)</label>
                             <input
                                 type="number"
                                 className="input-field"
@@ -134,11 +134,11 @@ const Masters = () => {
                                 </div>
                                 <div className="history-item">
                                     <span>22k Standard</span>
-                                    <span className="rate-val">${currentRate.ratePerGram22k}</span>
+                                    <span className="rate-val">₹{currentRate.ratePerGram22k}</span>
                                 </div>
                                 <div className="history-item">
                                     <span>24k Fine</span>
-                                    <span className="rate-val">${currentRate.ratePerGram24k}</span>
+                                    <span className="rate-val">₹{currentRate.ratePerGram24k}</span>
                                 </div>
                             </>
                         ) : <p className="text-muted text-sm">No rate set for today.</p>}

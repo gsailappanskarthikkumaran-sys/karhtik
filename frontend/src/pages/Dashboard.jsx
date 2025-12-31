@@ -84,7 +84,7 @@ const Dashboard = () => {
                     <div className="stat-icon green-icon"><DollarSign size={24} /></div>
                     <div className="stat-info">
                         <p>Outstanding</p>
-                        <h3>${stats?.financials?.outstanding?.toLocaleString() || 0}</h3>
+                        <h3>₹{stats?.financials?.outstanding?.toLocaleString() || 0}</h3>
                     </div>
                 </div>
                 <div className="stat-card">
@@ -123,7 +123,7 @@ const Dashboard = () => {
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                                 <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} tickFormatter={(value) => `$${value} `} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} tickFormatter={(value) => `₹${value} `} />
                                 <Tooltip
                                     contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
                                     itemStyle={{ color: '#fff' }}
@@ -197,7 +197,7 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                                 <div className="activity-amount">
-                                    <span>${loan.loanAmount}</span>
+                                    <span>₹{loan.loanAmount}</span>
                                     <span style={{ textTransform: 'uppercase' }}>{loan.status}</span>
                                 </div>
                             </div>

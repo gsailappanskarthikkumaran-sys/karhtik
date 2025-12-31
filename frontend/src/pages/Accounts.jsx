@@ -133,15 +133,15 @@ const Accounts = () => {
                         <div className="summary-cards">
                             <div className="mini-card green">
                                 <span>Money In</span>
-                                <h3>+${dayBookData.summary?.totalIn?.toLocaleString() || 0}</h3>
+                                <h3>+₹{dayBookData.summary?.totalIn?.toLocaleString() || 0}</h3>
                             </div>
                             <div className="mini-card red">
                                 <span>Money Out</span>
-                                <h3>-${dayBookData.summary?.totalOut?.toLocaleString() || 0}</h3>
+                                <h3>-₹{dayBookData.summary?.totalOut?.toLocaleString() || 0}</h3>
                             </div>
                             <div className="mini-card blue">
                                 <span>Net Change</span>
-                                <h3>${dayBookData.summary?.netChange?.toLocaleString() || 0}</h3>
+                                <h3>₹{dayBookData.summary?.netChange?.toLocaleString() || 0}</h3>
                             </div>
                         </div>
 
@@ -174,7 +174,7 @@ const Accounts = () => {
                                                 <td>{t.category}</td>
                                                 <td>{t.description}</td>
                                                 <td className={`text-right font-bold ${t.type === 'CREDIT' ? 'text-green' : 'text-red'}`}>
-                                                    {t.type === 'CREDIT' ? '+' : '-'}${t.amount.toLocaleString()}
+                                                    {t.type === 'CREDIT' ? '+' : '-'}₹{t.amount.toLocaleString()}
                                                 </td>
                                             </tr>
                                         ))

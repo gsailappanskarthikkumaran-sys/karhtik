@@ -256,7 +256,7 @@ const PledgeEntry = () => {
                         <div style={{ marginBottom: '24px' }}>
                             <div className="calc-row">
                                 <span className="calc-label">Gold Rate (22k)</span>
-                                <span className="calc-val">{goldRate ? `$${goldRate.ratePerGram22k}/g` : 'N/A'}</span>
+                                <span className="calc-val">{goldRate ? `₹${goldRate.ratePerGram22k}/g` : 'N/A'}</span>
                             </div>
                             <div className="calc-row">
                                 <span className="calc-label">Total Weight</span>
@@ -267,18 +267,18 @@ const PledgeEntry = () => {
 
                             <div className="total-row">
                                 <span style={{ color: '#64748b' }}>Gross Valuation</span>
-                                <span className="total-val">${totalValuation.toFixed(2)}</span>
+                                <span className="total-val">₹{totalValuation.toFixed(2)}</span>
                             </div>
                             <div className="total-row">
                                 <span style={{ color: '#64748b' }}>Max Loan Limit</span>
-                                <span className="total-val green-text">${maxEligibleLoan.toFixed(2)}</span>
+                                <span className="total-val green-text">₹{maxEligibleLoan.toFixed(2)}</span>
                             </div>
                         </div>
 
                         <div className="loan-input-box">
                             <label className="input-label-sm" style={{ color: '#a16207', marginBottom: '8px' }}>Enter Required Loan Amount</label>
                             <div className="loan-input-wrapper">
-                                <span className="currency-symbol">$</span>
+                                <span className="currency-symbol">₹</span>
                                 <input
                                     type="number"
                                     className="loan-input"

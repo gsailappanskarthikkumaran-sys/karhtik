@@ -54,7 +54,7 @@ const StaffDashboard = () => {
                         <div className="stat-info">
                             <p>Loans Issued</p>
                             <h3>{stats?.today?.loansCount || 0}</h3>
-                            <span className="text-sm text-slate-500">${stats?.today?.loansAmount || 0} disbursed</span>
+                            <span className="text-sm text-slate-500">₹{stats?.today?.loansAmount || 0} disbursed</span>
                         </div>
                     </div>
 
@@ -64,7 +64,7 @@ const StaffDashboard = () => {
                         </div>
                         <div className="stat-info">
                             <p>Payments Received</p>
-                            <h3>${stats?.today?.paymentsReceived || 0}</h3>
+                            <h3>₹{stats?.today?.paymentsReceived || 0}</h3>
                             <span className="text-sm text-slate-500">Collected today</span>
                         </div>
                     </div>
@@ -95,13 +95,13 @@ const StaffDashboard = () => {
 
                     <div className="panel-card p-6 flex flex-col items-center text-center">
                         <Wallet size={32} className="text-emerald-500 mb-2" />
-                        <h3 className="text-2xl font-bold text-slate-800">${stats?.stats?.outstandingAmount?.toLocaleString() || 0}</h3>
+                        <h3 className="text-2xl font-bold text-slate-800">₹{stats?.stats?.outstandingAmount?.toLocaleString() || 0}</h3>
                         <p className="text-slate-500 uppercase text-xs font-bold tracking-wider">Total Outstanding</p>
                     </div>
 
                     <div className="panel-card p-6 flex flex-col items-center text-center">
                         <DollarSign size={32} className="text-amber-500 mb-2" />
-                        <h3 className="text-2xl font-bold text-slate-800">${stats?.today?.interestCollected || 0}</h3>
+                        <h3 className="text-2xl font-bold text-slate-800">₹{stats?.today?.interestCollected || 0}</h3>
                         <p className="text-slate-500 uppercase text-xs font-bold tracking-wider">Interest Today</p>
                     </div>
 
