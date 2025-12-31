@@ -35,7 +35,7 @@ import { loanRoutes, paymentRouter } from './src/routes/loanRoutes.js';
 import staffRoutes from './src/routes/staffRoutes.js';
 import voucherRoutes from './src/routes/voucherRoutes.js';
 import reportRoutes from './src/routes/reportRoutes.js';
-import reportRoutes from './src/routes/reportRoutes.js';
+
 import notificationRoutes from './src/routes/notificationRoutes.js';
 import auctionRoutes from './src/routes/auctionRoutes.js';
 

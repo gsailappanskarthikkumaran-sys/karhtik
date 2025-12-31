@@ -58,7 +58,7 @@ const Payments = () => {
             await api.post('/payments', {
                 loanId: loan._id,
                 amount: parseFloat(amount),
-                amount: parseFloat(amount),
+
                 type,
                 paymentMode,
                 remarks

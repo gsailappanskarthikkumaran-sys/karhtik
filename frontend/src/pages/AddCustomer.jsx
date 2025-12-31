@@ -10,9 +10,12 @@ const AddCustomer = () => {
         name: '',
         email: '',
         phone: '',
-        address: ''
+        address: '',
+        aadharNumber: '',
+        panNumber: ''
     });
     const [photo, setPhoto] = useState(null);
+    const [idFiles, setIdFiles] = useState({ aadharCard: null, panCard: null });
     const [preview, setPreview] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -28,6 +31,13 @@ const AddCustomer = () => {
         }
     };
 
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
+        if (files[0]) {
+            setIdFiles(prev => ({ ...prev, [name]: files[0] }));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -37,9 +47,12 @@ const AddCustomer = () => {
         data.append('email', formData.email);
         data.append('phone', formData.phone);
         data.append('address', formData.address);
-        if (photo) {
-            data.append('photo', photo);
-        }
+        data.append('aadharNumber', formData.aadharNumber);
+        data.append('panNumber', formData.panNumber);
+
+        if (photo) data.append('photo', photo);
+        if (idFiles.aadharCard) data.append('aadharCard', idFiles.aadharCard);
+        if (idFiles.panCard) data.append('panCard', idFiles.panCard);
 
         try {
             await api.post('/customers', data, {
@@ -109,12 +122,56 @@ const AddCustomer = () => {
                             <textarea
                                 name="address"
                                 className="input-field"
-                                rows="3"
+                                rows="2"
                                 value={formData.address}
                                 onChange={handleChange}
                                 required
                                 placeholder="Full residential address"
                             ></textarea>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Aadhar Number</label>
+                            <input
+                                type="text"
+                                name="aadharNumber"
+                                className="input-field"
+                                value={formData.aadharNumber}
+                                onChange={handleChange}
+                                placeholder="xxxx-xxxx-xxxx"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">PAN Number</label>
+                            <input
+                                type="text"
+                                name="panNumber"
+                                className="input-field"
+                                value={formData.panNumber}
+                                onChange={handleChange}
+                                placeholder="ABCDE1234F"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Aadhar Card Photo</label>
+                            <input
+                                type="file"
+                                name="aadharCard"
+                                className="input-field"
+                                onChange={handleFileChange}
+                                accept="image/*"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">PAN Card Photo</label>
+                            <input
+                                type="file"
+                                name="panCard"
+                                className="input-field"
+                                onChange={handleFileChange}
+                                accept="image/*"
+                            />
                         </div>
                     </div>
 

@@ -91,6 +91,16 @@ const CustomerDetails = () => {
                             <div className="info-item">
                                 <Calendar size={16} /> Joined: {new Date(customer.createdAt).toLocaleDateString()}
                             </div>
+                            {customer.aadharNumber && (
+                                <div className="info-item">
+                                    <span className="font-bold text-xs" style={{ marginRight: '4px' }}>UID:</span> {customer.aadharNumber}
+                                </div>
+                            )}
+                            {customer.panNumber && (
+                                <div className="info-item">
+                                    <span className="font-bold text-xs" style={{ marginRight: '4px' }}>PAN:</span> {customer.panNumber}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

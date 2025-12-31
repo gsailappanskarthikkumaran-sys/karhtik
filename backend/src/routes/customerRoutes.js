@@ -6,7 +6,11 @@ import upload from '../middleware/uploadMiddleware.js';
 const router = express.Router();
 
 router.route('/')
-    .post(protect, upload.fields([{ name: 'photo', maxCount: 1 }, { name: 'idProof', maxCount: 1 }]), createCustomer)
+    .post(protect, upload.fields([
+        { name: 'photo', maxCount: 1 },
+        { name: 'aadharCard', maxCount: 1 },
+        { name: 'panCard', maxCount: 1 }
+    ]), createCustomer)
     .get(protect, getCustomers);
 
 router.route('/:id').get(protect, getCustomerById);

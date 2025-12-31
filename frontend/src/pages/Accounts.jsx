@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
-import { Book, TrendingUp, TrendingDown, DollarSign, Calendar, FileText, PieChart } from 'lucide-react';
+import { Book, TrendingUp, TrendingDown, DollarSign, Calendar, FileText, PieChart, Printer } from 'lucide-react';
 import './Accounts.css';
 
 const Accounts = () => {
@@ -292,8 +292,16 @@ const Accounts = () => {
 
                 {activeTab === 'demand' && (
                     <div className="daybook-view">
-                        <div className="p-4 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded mb-4 text-sm">
-                            Showing loans overdue or maturing within the next 30 days.
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="p-4 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded text-sm flex-1 mr-4">
+                                Showing loans overdue or maturing within the next 30 days.
+                            </div>
+                            <button
+                                onClick={() => window.open('/print/report-demand/all', '_blank')}
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 font-bold"
+                            >
+                                <Printer size={18} /> Print List
+                            </button>
                         </div>
                         {loading ? <p>Loading Demand List...</p> : (
                             <div className="transactions-table-container">

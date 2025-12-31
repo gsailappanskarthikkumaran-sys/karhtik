@@ -20,7 +20,12 @@ const PrintView = () => {
             if (type === 'loan') endpoint = `/loans/${id}`;
             else if (type === 'customer') endpoint = `/customers/${id}`;
             else if (type === 'payment') endpoint = `/payments/${id}`;
-            // Add more types here
+            else if (type === 'report-demand') {
+                // Fetch demand report from reports API
+                const { data } = await api.get('/reports/demand');
+                setData(data);
+                return; // Direct return as we set data differently
+            }
 
             if (endpoint) {
                 const { data } = await api.get(endpoint);
@@ -60,6 +65,8 @@ const PrintView = () => {
                 {/* Content based on Type */}
                 {type === 'loan' && <LoanReceipt loan={data} />}
                 {type === 'customer' && <CustomerProfile customer={data} />}
+                {type === 'payment' && <PaymentReceipt payment={data} />}
+                {type === 'report-demand' && <DemandReport report={data} />}
             </div>
         </div>
     );
@@ -253,6 +260,51 @@ const PaymentReceipt = ({ payment }) => (
             but for a receipt we need fetch logic in PrintView to populate. 
             Let's update PrintView fetch logic first.
         */}
+    </div>
+);
+
+
+
+const DemandReport = ({ report }) => (
+    <div>
+        <h2 className="document-title">DEMAND / OVERDUE REPORT</h2>
+        <div className="mb-4 text-sm text-gray-500">
+            Generated on: {new Date().toLocaleString()}
+        </div>
+
+        <table className="w-full text-xs text-left border-collapse">
+            <thead>
+                <tr className="border-b-2 border-black">
+                    <th className="py-2">Loan ID</th>
+                    <th className="py-2">Customer</th>
+                    <th className="py-2">Date</th>
+                    <th className="py-2">Amount</th>
+                    <th className="py-2">Due Date</th>
+                    <th className="py-2 text-right">Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {report.map((loan, idx) => (
+                    <tr key={loan._id} className="border-b border-gray-200">
+                        <td className="py-2">{loan.loanId}</td>
+                        <td className="py-2">{loan.customer?.name} <br /><span className="text-gray-400">{loan.customer?.phone}</span></td>
+                        <td className="py-2">{new Date(loan.createdAt).toLocaleDateString()}</td>
+                        <td className="py-2">${loan.loanAmount}</td>
+                        <td className="py-2 text-red-600 font-bold">{new Date(loan.dueDate || Date.now()).toLocaleDateString()}</td>
+                        <td className="py-2 text-right font-bold">${loan.currentBalance}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+
+        <div className="mt-8 pt-4 border-t border-black grid grid-cols-2">
+            <div>
+                <strong>Total Loans:</strong> {report.length}
+            </div>
+            <div className="text-right">
+                <strong>Total Outstanding:</strong> ${report.reduce((sum, l) => sum + l.currentBalance, 0).toFixed(2)}
+            </div>
+        </div>
     </div>
 );
 

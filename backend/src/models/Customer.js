@@ -21,11 +21,16 @@ const customerSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    aadharNumber: { type: String },
+    panNumber: { type: String },
     photo: {
         type: String, // Path to stored image
     },
+    aadharCard: { type: String }, // Path to Aadhar image
+    panCard: { type: String },    // Path to PAN image
+    // Deprecated generic idProof, keeping for backward config if needed or can remove
     idProof: {
-        type: String, // Path to stored image
+        type: String,
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,

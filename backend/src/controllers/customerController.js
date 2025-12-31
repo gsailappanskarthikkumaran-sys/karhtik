@@ -5,7 +5,7 @@ import Customer from '../models/Customer.js';
 // @access  Private
 const createCustomer = async (req, res) => {
     try {
-        const { name, phone, address, email } = req.body;
+        const { name, phone, address, email, aadharNumber, panNumber } = req.body;
         let { customerId } = req.body;
 
         if (!customerId) {
@@ -14,7 +14,11 @@ const createCustomer = async (req, res) => {
 
         // File paths
         const photo = req.files && req.files['photo'] ? req.files['photo'][0].path.replace(/\\/g, "/") : null;
-        const idProof = req.files && req.files['idProof'] ? req.files['idProof'][0].path.replace(/\\/g, "/") : null;
+        const aadharCard = req.files && req.files['aadharCard'] ? req.files['aadharCard'][0].path.replace(/\\/g, "/") : null;
+        const panCard = req.files && req.files['panCard'] ? req.files['panCard'][0].path.replace(/\\/g, "/") : null;
+
+        // Legacy support if they used 'idProof' field for something else, or map it to aadharCard if desired.
+        // For now, we use specific fields.
 
         const customer = await Customer.create({
             customerId,
@@ -22,8 +26,11 @@ const createCustomer = async (req, res) => {
             email,
             phone,
             address,
+            aadharNumber,
+            panNumber,
             photo,
-            idProof,
+            aadharCard,
+            panCard,
             createdBy: req.user._id
         });
 
