@@ -109,7 +109,7 @@ const VoucherEntry = () => {
                         <div className="form-group">
                             <label>Amount</label>
                             <div className="input-with-icon">
-                                <span>$</span>
+                                <span>₹</span>
                                 <input
                                     type="number"
                                     placeholder="0.00"

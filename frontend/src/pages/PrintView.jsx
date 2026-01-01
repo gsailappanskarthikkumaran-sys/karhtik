@@ -97,6 +97,20 @@ const LoanReceipt = ({ loan }) => (
                     <label>Scheme</label>
                     <div>{loan.scheme?.schemeName} ({loan.scheme?.interestRate}%)</div>
                 </div>
+                <div className="detail-group mb-4">
+                    <label>Maturity Date</label>
+                    <div>{new Date(loan.dueDate).toLocaleDateString()}</div>
+                </div>
+                <div className="detail-group mb-4">
+                    <label>Next Due Date</label>
+                    <div>
+                        {(() => {
+                            const d = new Date(loan.createdAt);
+                            d.setMonth(d.getMonth() + 1);
+                            return d.toLocaleDateString();
+                        })()}
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -289,9 +303,9 @@ const DemandReport = ({ report }) => (
                         <td className="py-2">{loan.loanId}</td>
                         <td className="py-2">{loan.customer?.name} <br /><span className="text-gray-400">{loan.customer?.phone}</span></td>
                         <td className="py-2">{new Date(loan.createdAt).toLocaleDateString()}</td>
-                        <td className="py-2">${loan.loanAmount}</td>
+                        <td className="py-2">₹{loan.loanAmount}</td>
                         <td className="py-2 text-red-600 font-bold">{new Date(loan.dueDate || Date.now()).toLocaleDateString()}</td>
-                        <td className="py-2 text-right font-bold">${loan.currentBalance}</td>
+                        <td className="py-2 text-right font-bold">₹{loan.currentBalance}</td>
                     </tr>
                 ))}
             </tbody>
@@ -302,7 +316,7 @@ const DemandReport = ({ report }) => (
                 <strong>Total Loans:</strong> {report.length}
             </div>
             <div className="text-right">
-                <strong>Total Outstanding:</strong> ${report.reduce((sum, l) => sum + l.currentBalance, 0).toFixed(2)}
+                <strong>Total Outstanding:</strong> ₹{report.reduce((sum, l) => sum + l.currentBalance, 0).toFixed(2)}
             </div>
         </div>
     </div>

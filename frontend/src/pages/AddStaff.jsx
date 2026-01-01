@@ -1,30 +1,53 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import api from '../api/axios';
-import { Save, X, User, Lock, Briefcase, MapPin, CreditCard, Phone } from 'lucide-react';
+import { Save, X, User, Lock, Briefcase, MapPin, CreditCard, Phone, Building2, Mail, CheckCircle } from 'lucide-react';
 import './Staff.css';
 import './AddStaff.css';
 
 const AddStaff = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const isEditMode = !!id;
 
     const [formData, setFormData] = useState({
         fullName: '',
+        email: '',
         address: '',
         phoneNumber: '',
         idProofNumber: '',
         username: '',
         password: '',
+        branch: ''
     });
+    const [branches, setBranches] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    // State for showing generated credentials
+    const [createdCredentials, setCreatedCredentials] = useState(null);
+
     useEffect(() => {
+        fetchBranches();
         if (isEditMode) {
             fetchStaffData();
+        } else {
+            const searchParams = new URLSearchParams(location.search);
+            const branchId = searchParams.get('branchId');
+            if (branchId) {
+                setFormData(prev => ({ ...prev, branch: branchId }));
+            }
         }
-    }, [id]);
+    }, [id, location.search]);
+
+    const fetchBranches = async () => {
+        try {
+            const { data } = await api.get('/branches');
+            setBranches(data);
+        } catch (error) {
+            console.error('Failed to fetch branches', error);
+        }
+    };
 
     const fetchStaffData = async () => {
         try {
@@ -33,11 +56,13 @@ const AddStaff = () => {
             if (member) {
                 setFormData({
                     fullName: member.fullName,
+                    email: member.email || '',
                     address: member.address || '',
                     phoneNumber: member.phoneNumber || '',
                     idProofNumber: member.idProofNumber || '',
                     username: member.username,
                     password: '',
+                    branch: member.branch || ''
                 });
             } else {
                 alert('Staff not found');
@@ -55,31 +80,66 @@ const AddStaff = () => {
 
         const payload = {
             fullName: formData.fullName,
+            email: formData.email,
             address: formData.address,
             phoneNumber: formData.phoneNumber,
             idProofNumber: formData.idProofNumber,
-            username: formData.username
+            branch: formData.branch
         };
 
-        if (formData.password) {
-            payload.password = formData.password;
+        // Only include username/password in payload if in edit mode (optional override)
+        if (isEditMode) {
+            if (formData.username) payload.username = formData.username;
+            if (formData.password) payload.password = formData.password;
         }
 
         try {
             if (isEditMode) {
                 await api.put(`/staff/${id}`, payload);
                 alert('Staff Updated Successfully!');
+                navigate('/staff');
             } else {
-                await api.post('/staff', payload);
-                alert('Staff Added Successfully!');
+                const { data } = await api.post('/staff', payload);
+                // Show generated credentials
+                setCreatedCredentials({
+                    username: data.username,
+                    password: data.generatedPassword
+                });
             }
-            navigate('/staff');
         } catch (error) {
             alert(error.response?.data?.message || 'Failed to save staff');
         } finally {
             setLoading(false);
         }
     };
+
+    if (createdCredentials) {
+        return (
+            <div className="page-container" style={{ maxWidth: '600px', margin: '4rem auto', textAlign: 'center' }}>
+                <div className="staff-card" style={{ padding: '3rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                        <CheckCircle size={64} color="#16a34a" />
+                    </div>
+                    <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: 'var(--text-main)' }}>Staff Added Successfully!</h2>
+                    <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
+                        Please share the following credentials with the staff member.
+                    </p>
+
+                    <div style={{ background: '#f1f5f9', padding: '1.5rem', borderRadius: 'var(--radius-lg)', textAlign: 'left', marginBottom: '2rem' }}>
+                        <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>LOGIN ID</p>
+                        <p style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '1rem' }}>{createdCredentials.username}</p>
+
+                        <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>PASSWORD</p>
+                        <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{createdCredentials.password}</p>
+                    </div>
+
+                    <button className="btn-primary" onClick={() => navigate('/staff')}>
+                        Go to Staff List
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="page-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
@@ -102,6 +162,19 @@ const AddStaff = () => {
                             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                             required
                             placeholder="e.g. Jane Doe"
+                        />
+                    </div>
+
+                    {/* 1.5 Email Address (New) */}
+                    <div className="form-group">
+                        <label className="form-label"><Mail size={16} style={{ display: 'inline', marginRight: '6px' }} /> Email Address</label>
+                        <input
+                            type="email"
+                            className="input-field"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            required
+                            placeholder="e.g. jane@example.com"
                         />
                     </div>
 
@@ -129,44 +202,61 @@ const AddStaff = () => {
                         />
                     </div>
 
-                    {/* 4. ID Proof Number */}
+                    {/* 4. Branch Selection */}
                     <div className="form-group">
-                        <label className="form-label"><CreditCard size={16} style={{ display: 'inline', marginRight: '6px' }} /> ID Proof Number</label>
+                        <label className="form-label"><Building2 size={16} style={{ display: 'inline', marginRight: '6px' }} /> Branch</label>
+                        <select
+                            className="input-field"
+                            value={formData.branch}
+                            onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
+                        >
+                            <option value="">Select Branch (Optional)</option>
+                            {branches.map(b => (
+                                <option key={b._id} value={b._id}>{b.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* 5. Aadhar Card Number */}
+                    <div className="form-group">
+                        <label className="form-label"><CreditCard size={16} style={{ display: 'inline', marginRight: '6px' }} /> Aadhar Card Number (ID Proof)</label>
                         <input
                             type="text"
                             className="input-field"
                             value={formData.idProofNumber}
                             onChange={(e) => setFormData({ ...formData, idProofNumber: e.target.value })}
-                            placeholder="e.g. staff id number"
+                            placeholder="Enter 12-digit Aadhar Number"
                         />
                     </div>
 
-                    {/* 5. Staff ID (Username) */}
-                    <div className="form-group">
-                        <label className="form-label"><User size={16} style={{ display: 'inline', marginRight: '6px' }} /> Set Staff ID (Login Username)</label>
-                        <input
-                            type="text"
-                            className="input-field"
-                            value={formData.username}
-                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                            required
-                            placeholder="e.g. STF001"
-                        />
-                    </div>
+                    {/* Show Login Fields ONLY in Edit Mode */}
+                    {isEditMode && (
+                        <>
+                            <div className="form-group">
+                                <label className="form-label"><User size={16} style={{ display: 'inline', marginRight: '6px' }} /> Staff ID (Login Username)</label>
+                                <input
+                                    type="text"
+                                    className="input-field"
+                                    value={formData.username}
+                                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                    required
+                                    placeholder="e.g. STF001"
+                                />
+                            </div>
 
-                    {/* 6. Staff Password */}
-                    <div className="form-group">
-                        <label className="form-label"><Lock size={16} style={{ display: 'inline', marginRight: '6px' }} /> Set Staff Password {isEditMode && '(Leave blank to keep current)'}</label>
-                        <input
-                            type="password"
-                            className="input-field"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            required={!isEditMode}
-                            placeholder={isEditMode ? "Enter new password to change" : "Set initial password"}
-                            minLength="6"
-                        />
-                    </div>
+                            <div className="form-group">
+                                <label className="form-label"><Lock size={16} style={{ display: 'inline', marginRight: '6px' }} /> Reset Password (Leave blank to keep current)</label>
+                                <input
+                                    type="password"
+                                    className="input-field"
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    placeholder="Enter new password to change"
+                                    minLength="6"
+                                />
+                            </div>
+                        </>
+                    )}
 
                     <div className="form-actions border-t pt-4 mt-6 flex justify-end gap-3">
                         <button type="button" className="btn-secondary" onClick={() => navigate('/staff')}>

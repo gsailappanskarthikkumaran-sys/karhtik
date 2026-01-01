@@ -29,7 +29,8 @@ const getLatestGoldRate = async (req, res) => {
         if (rate) {
             res.json(rate);
         } else {
-            res.status(404).json({ message: 'No gold rate found' });
+            // Return 200 with empty data instead of 404 to avoid console errors
+            res.json(null);
         }
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });

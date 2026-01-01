@@ -18,6 +18,10 @@ const schemeSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    preInterestMonths: {
+        type: Number,
+        default: 0,
+    },
     description: {
         type: String,
     },

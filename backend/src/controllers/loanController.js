@@ -8,7 +8,7 @@ import Payment from '../models/Payment.js';
 // @route   POST /api/loans
 // @access  Private
 const createLoan = async (req, res) => {
-    const { customerId, schemeId, items, requestedLoanAmount } = req.body;
+    const { customerId, schemeId, items, requestedLoanAmount, preInterestAmount } = req.body;
     // items is expected to be a JSON string if sent via FormData with files, or body parsing handles it? 
     // With Multer, we need to handle mixed form data. 
     // Simplified approach: Client sends JSON for data and Files separately? 
@@ -66,6 +66,7 @@ const createLoan = async (req, res) => {
             goldRateAtPledge: goldRateObj.ratePerGram22k, // Storing base 22k as ref or average
             valuation: totalValuation,
             loanAmount: requestedLoanAmount,
+            preInterestAmount: preInterestAmount || 0,
             interestRate: scheme.interestRate,
             dueDate: new Date(Date.now() + scheme.tenureMonths * 30 * 24 * 60 * 60 * 1000),
             createdBy: req.user._id,

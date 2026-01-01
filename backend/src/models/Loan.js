@@ -43,6 +43,10 @@ const loanSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    preInterestAmount: {
+        type: Number,
+        default: 0,
+    },
     loanDate: {
         type: Date,
         default: Date.now,

@@ -22,6 +22,7 @@ import Auctions from './pages/Auctions';
 
 import Contact from './pages/Contact';
 import About from './pages/About';
+import Branches from './pages/Branches';
 
 const App = () => {
   const { loading } = useAuth();
@@ -38,7 +39,7 @@ const App = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
-        {/* <Route path="/customers" element={<Customers />} />
+        <Route path="/customers" element={<Customers />} />
         <Route path="/customers/add" element={<AddCustomer />} />
         <Route path="/customers/edit/:id" element={<AddCustomer />} />
         <Route path="/customers/:id" element={<CustomerDetails />} />
@@ -50,10 +51,11 @@ const App = () => {
         <Route path="/vouchers" element={<VoucherEntry />} />
         <Route path="/accounts" element={<Accounts />} />
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/print/:type/:id" element={<PrintView />} /> */}
+        <Route path="/print/:type/:id" element={<PrintView />} />
         <Route path="/staff" element={<Staff />} />
         <Route path="/staff/add" element={<AddStaff />} />
         <Route path="/staff/edit/:id" element={<AddStaff />} />
+        <Route path="/branches" element={<Branches />} />
       </Route>
     </Routes>
   );

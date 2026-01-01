@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        sparse: true,
+    },
     role: {
         type: String,
         enum: ['admin', 'staff'],
@@ -32,6 +38,10 @@ const userSchema = new mongoose.Schema({
     },
     idProofNumber: {
         type: String,
+    },
+    branch: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Branch',
     }
 }, {
     timestamps: true,

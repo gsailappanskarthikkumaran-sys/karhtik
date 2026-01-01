@@ -17,6 +17,11 @@ console.log('Starting Server...'); // Trigger restart
 
 // App Init
 const app = express();
+import initScheduler from './src/services/goldRateScheduler.js';
+
+// Initialize Cron Jobs
+initScheduler();
+
 const PORT = process.env.PORT || 5000;
 
 // Middleware
@@ -38,6 +43,7 @@ import reportRoutes from './src/routes/reportRoutes.js';
 
 import notificationRoutes from './src/routes/notificationRoutes.js';
 import auctionRoutes from './src/routes/auctionRoutes.js';
+import branchRoutes from './src/routes/branchRoutes.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/masters', masterRoutes);
@@ -49,6 +55,7 @@ app.use('/api/vouchers', voucherRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/auctions', auctionRoutes);
+app.use('/api/branches', branchRoutes);
 
 app.get('/', (req, res) => {
     res.send('Pawn Broking API is running');

@@ -12,6 +12,7 @@ const PledgeEntry = () => {
         schemeId: '',
         requestedLoan: '',
     });
+    const [preInterestAmount, setPreInterestAmount] = useState(''); // New State
     const [items, setItems] = useState([{ name: '', netWeight: '', purity: '22k', description: '' }]);
     const [files, setFiles] = useState([]);
 
@@ -86,6 +87,7 @@ const PledgeEntry = () => {
         data.append('customerId', formData.customerId);
         data.append('schemeId', formData.schemeId);
         data.append('requestedLoanAmount', formData.requestedLoan);
+        data.append('preInterestAmount', preInterestAmount); // Send new field
         data.append('items', JSON.stringify(items));
 
         for (let i = 0; i < files.length; i++) {
@@ -294,6 +296,38 @@ const PledgeEntry = () => {
                                     <AlertCircle size={12} /> Exceeds eligible limit
                                 </div>
                             )}
+                        </div>
+
+                        <div className="divider"></div>
+
+                        {formData.schemeId && (
+                            <div style={{ marginBottom: '16px' }}>
+                                <div className="calc-row">
+                                    <span className="calc-label">Loan Tenure</span>
+                                    <span className="calc-val">{schemes.find(s => s._id === formData.schemeId)?.tenureMonths || 0} Months</span>
+                                </div>
+                                <div className="calc-row">
+                                    <span className="calc-label" style={{ color: '#ea580c' }}>Pre-Interest Deduction</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <span style={{ fontSize: '0.8rem', color: '#64748b' }}>₹</span>
+                                        <input
+                                            type="number"
+                                            className="input-sm"
+                                            style={{ width: '80px', textAlign: 'right', padding: '2px 4px' }}
+                                            value={preInterestAmount}
+                                            onChange={e => setPreInterestAmount(e.target.value)}
+                                            placeholder="0"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="total-row" style={{ marginTop: '12px', borderTop: '2px solid #e2e8f0', paddingTop: '12px' }}>
+                            <span style={{ color: '#0f172a', fontWeight: 700 }}>Net Cash to Customer</span>
+                            <span className="total-val" style={{ color: '#0f172a' }}>
+                                ₹{((parseFloat(formData.requestedLoan) || 0) - (parseFloat(preInterestAmount) || 0)).toFixed(2)}
+                            </span>
                         </div>
 
                         <button

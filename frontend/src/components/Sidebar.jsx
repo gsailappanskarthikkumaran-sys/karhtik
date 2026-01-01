@@ -8,7 +8,8 @@ import {
     Settings,
     Receipt,
     Book,
-    Gavel
+    Gavel,
+    GitBranch
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import './Sidebar.css';
@@ -31,7 +32,7 @@ const Sidebar = () => {
 
         ...(isAdmin ? [
             { name: 'Masters', path: '/masters', icon: <Settings size={20} /> },
-            { name: 'Staff', path: '/staff', icon: <Users size={20} /> }
+            { name: 'Branches', path: '/branches', icon: <GitBranch size={20} /> }
         ] : []),
     ];
 

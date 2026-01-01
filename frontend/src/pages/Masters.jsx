@@ -14,6 +14,7 @@ const Masters = () => {
     const [schemeName, setSchemeName] = useState('');
     const [interestRate, setInterestRate] = useState('');
     const [tenure, setTenure] = useState('');
+    const [preInterest, setPreInterest] = useState(''); // New State
     const [maxLoan, setMaxLoan] = useState('');
     const [schemes, setSchemes] = useState([]);
 
@@ -60,13 +61,15 @@ const Masters = () => {
                 schemeName,
                 interestRate: parseFloat(interestRate),
                 tenureMonths: parseInt(tenure),
-                maxLoanPercentage: parseFloat(maxLoan)
+                maxLoanPercentage: parseFloat(maxLoan),
+                preInterestMonths: parseInt(preInterest) || 0 // Send to backend
             });
             setSchemes([...schemes, data]);
             alert('Scheme Added!');
             setSchemeName('');
             setInterestRate('');
             setTenure('');
+            setPreInterest('');
             setMaxLoan('');
         } catch (error) {
             alert('Failed to add scheme');
@@ -184,6 +187,7 @@ const Masters = () => {
                                 />
                             </div>
                         </div>
+
                         <div className="form-group">
                             <label className="form-label">Max Loan to Value (%)</label>
                             <input
@@ -203,7 +207,10 @@ const Masters = () => {
                             {schemes.map(s => (
                                 <div key={s._id} className="history-item">
                                     <span>{s.schemeName}</span>
-                                    <span style={{ fontWeight: 600 }}>{s.interestRate}% / {s.maxLoanPercentage}% LTV</span>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <span style={{ fontWeight: 600, display: 'block' }}>{s.interestRate}% / {s.maxLoanPercentage}% LTV</span>
+                                        {s.preInterestMonths > 0 && <span style={{ fontSize: '0.7rem', color: '#ea580c' }}>Pre: {s.preInterestMonths} Mos</span>}
+                                    </div>
                                 </div>
                             ))}
                         </div>
