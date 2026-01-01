@@ -1,5 +1,3 @@
-/* Customers Page Styles */
-
 .page-container {
     padding: var(--spacing-lg);
     max-width: 1400px;
@@ -7,7 +5,6 @@
     animation: fadeInUp 0.4s ease-out;
 }
 
-/* Header Section */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -17,7 +14,7 @@
 
 .page-title h1 {
     font-size: 1.875rem;
-    /* 30px */
+
     letter-spacing: -0.02em;
     color: var(--text-main);
     margin-bottom: 0.25rem;
@@ -49,7 +46,7 @@
     box-shadow: var(--shadow-lg);
 }
 
-/* Content Card */
+
 .customers-card {
     background: white;
     border-radius: var(--radius-xl);
@@ -64,7 +61,7 @@
     padding: var(--spacing-md) var(--spacing-lg);
     border-bottom: 1px solid var(--border-color);
     background-color: #f8fafc;
-    /* slightly lighter bg */
+
     display: flex;
     gap: var(--spacing-md);
     align-items: center;
@@ -121,7 +118,7 @@
     border-color: #cbd5e1;
 }
 
-/* Table */
+
 .table-container {
     overflow-x: auto;
 }
@@ -160,7 +157,7 @@
     background-color: #fcfcfc;
 }
 
-/* Cell Styles */
+
 .customer-cell {
     display: flex;
     align-items: center;
@@ -169,7 +166,7 @@
 
 .customer-avatar {
     width: 3rem;
-    /* 48px */
+
     height: 3rem;
     border-radius: var(--radius-lg);
     background: #f1f5f9;

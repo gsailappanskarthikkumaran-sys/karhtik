@@ -40,7 +40,7 @@ const Dashboard = () => {
     }
 
    
-    const COLORS = ['#ca8a04', '#3b82f6', '#22c55e', '#a855f7', '#ef4444']; // Yellow, Blue, Green, Purple, Red
+    const COLORS = ['#ca8a04', '#3b82f6', '#22c55e', '#a855f7', '#ef4444']; 
 
     if (loading) {
         return (
@@ -49,8 +49,6 @@ const Dashboard = () => {
             </div>
         );
     }
-
-    
     const monthlyData = stats?.monthlyTrend?.length ? stats.monthlyTrend : [
         { month: 'Jan', amount: 0 }, { month: 'Feb', amount: 0 }
     ];
@@ -104,7 +102,6 @@ const Dashboard = () => {
             </div>
 
             <div className="analytics-grid">
-                {/* Main Chart */}
                 <div className="panel-card chart-panel">
                     <div className="panel-header">
                         <div className="panel-title">

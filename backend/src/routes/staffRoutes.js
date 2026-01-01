@@ -11,5 +11,6 @@ router.route('/')
 router.route('/:id')
     .put(protect, admin, updateStaff)
     .delete(protect, admin, deleteStaff);
+    .delete (protect, admin, deleteStaff);
 
 export default router;

@@ -1,0 +1,139 @@
+.staff-dashboard-container {
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.staff-section {
+    margin-bottom: 2rem;
+}
+
+.staff-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+}
+
+.staff-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+
+.staff-stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.staff-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.staff-stat-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.icon-blue {
+    background: #eff6ff;
+    color: #3b82f6;
+    border: 1px solid #dbeafe;
+}
+
+.icon-green {
+    background: #f0fdf4;
+    color: #22c55e;
+    border: 1px solid #dcfce7;
+}
+
+.icon-orange {
+    background: #fff7ed;
+    color: #f97316;
+    border: 1px solid #ffedd5;
+}
+
+.staff-stat-info p {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.staff-stat-info h3 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.staff-stat-subtext {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* Panel Cards */
+.staff-panel-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.staff-panel-card h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0.5rem 0;
+}
+
+.staff-panel-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Colors for icons in panel cards */
+.text-purple {
+    color: #a855f7;
+}
+
+.text-emerald {
+    color: #10b981;
+}
+
+.text-amber {
+    color: #f59e0b;
+}
+
+@media (min-width: 768px) {
+    .staff-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

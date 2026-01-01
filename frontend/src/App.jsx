@@ -11,14 +11,17 @@ import Loans from './pages/Loans';
 import Masters from './pages/Masters';
 import Staff from './pages/Staff';
 import AddStaff from './pages/AddStaff';
-import StaffDashboard from './pages/StaffDashboard'; 
-import VoucherEntry from './pages/VoucherEntry'; 
-import Accounts from './pages/Accounts'; 
-import Notifications from './pages/Notifications'; 
-import PrintView from './pages/PrintView'; 
+import StaffDashboard from './pages/StaffDashboard';
+import VoucherEntry from './pages/VoucherEntry';
+import Accounts from './pages/Accounts';
+import Notifications from './pages/Notifications';
+import PrintView from './pages/PrintView';
 import CustomerDetails from './pages/CustomerDetails';
-import Auctions from './pages/Auctions'; 
+import Auctions from './pages/Auctions';
 
+
+import Contact from './pages/Contact';
+import About from './pages/About';
 
 const App = () => {
   const { loading } = useAuth();
@@ -31,14 +34,15 @@ const App = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
 
-
       <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/customers" element={<Customers />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
+        {/* <Route path="/customers" element={<Customers />} />
         <Route path="/customers/add" element={<AddCustomer />} />
         <Route path="/customers/edit/:id" element={<AddCustomer />} />
         <Route path="/customers/:id" element={<CustomerDetails />} />
-        {/* <Route path="/auctions" element={<Auctions />} />
+        <Route path="/auctions" element={<Auctions />} />
         <Route path="/pledge" element={<PledgeEntry />} />
         <Route path="/payments" element={<Payments />} />
         <Route path="/loans" element={<Loans />} />
@@ -47,8 +51,6 @@ const App = () => {
         <Route path="/accounts" element={<Accounts />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/print/:type/:id" element={<PrintView />} /> */}
-
-        
         <Route path="/staff" element={<Staff />} />
         <Route path="/staff/add" element={<AddStaff />} />
         <Route path="/staff/edit/:id" element={<AddStaff />} />

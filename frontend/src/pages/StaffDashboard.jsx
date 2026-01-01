@@ -5,7 +5,7 @@ import {
     DollarSign, FileText, CheckCircle, Clock, Calendar,
     ArrowUpRight, ArrowDownLeft, Wallet
 } from 'lucide-react';
-import './Dashboard.css'; // Reusing generic dashboard styles
+import './StaffDashboard.css';
 
 const StaffDashboard = () => {
     const { user } = useAuth();
@@ -27,10 +27,10 @@ const StaffDashboard = () => {
         }
     };
 
-    if (loading) return <div className="p-8">Loading Dashboard...</div>;
+    if (loading) return <div className="staff-dashboard-container">Loading Dashboard...</div>;
 
     return (
-        <div className="dashboard-container">
+        <div className="staff-dashboard-container">
             <div className="dashboard-header">
                 <div className="dashboard-title">
                     <h1>Staff Dashboard</h1>
@@ -42,74 +42,72 @@ const StaffDashboard = () => {
                 </div>
             </div>
 
-            {/* TODAY'S SUMMARY */}
-            <div className="mb-8">
-                <h2 className="text-xl font-bold mb-4 text-slate-700">Today's Summary</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                    <div className="stat-card bg-blue-50 border-blue-100">
-                        <div className="stat-icon bg-blue-100 text-blue-600">
+            <div className="staff-section">
+                <h2 className="staff-section-title">Today's Summary</h2>
+                <div className="staff-stats-grid">
+
+                    <div className="staff-stat-card">
+                        <div className="staff-stat-icon icon-blue">
                             <FileText size={24} />
                         </div>
-                        <div className="stat-info">
+                        <div className="staff-stat-info">
                             <p>Loans Issued</p>
                             <h3>{stats?.today?.loansCount || 0}</h3>
-                            <span className="text-sm text-slate-500">₹{stats?.today?.loansAmount || 0} disbursed</span>
+                            <span className="staff-stat-subtext">₹{stats?.today?.loansAmount || 0} disbursed</span>
                         </div>
                     </div>
 
-                    <div className="stat-card bg-green-50 border-green-100">
-                        <div className="stat-icon bg-green-100 text-green-600">
+                    <div className="staff-stat-card">
+                        <div className="staff-stat-icon icon-green">
                             <ArrowDownLeft size={24} />
                         </div>
-                        <div className="stat-info">
+                        <div className="staff-stat-info">
                             <p>Payments Received</p>
                             <h3>₹{stats?.today?.paymentsReceived || 0}</h3>
-                            <span className="text-sm text-slate-500">Collected today</span>
+                            <span className="staff-stat-subtext">Collected today</span>
                         </div>
                     </div>
 
-                    <div className="stat-card bg-orange-50 border-orange-100">
-                        <div className="stat-icon bg-orange-100 text-orange-600">
+                    <div className="staff-stat-card">
+                        <div className="staff-stat-icon icon-orange">
                             <Clock size={24} />
                         </div>
-                        <div className="stat-info">
+                        <div className="staff-stat-info">
                             <p>Pending Redemptions</p>
                             <h3>{stats?.today?.pendingRedemptions || 0}</h3>
-                            <span className="text-sm text-slate-500">Due within 7 days</span>
+                            <span className="staff-stat-subtext">Due within 7 days</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* QUICK STATS */}
-            <div className="mb-8">
-                <h2 className="text-xl font-bold mb-4 text-slate-700">Quick Stats</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="staff-section">
+                <h2 className="staff-section-title">Quick Stats</h2>
+                <div className="staff-stats-grid">
 
-                    <div className="panel-card p-6 flex flex-col items-center text-center">
-                        <CheckCircle size={32} className="text-purple-500 mb-2" />
-                        <h3 className="text-2xl font-bold text-slate-800">{stats?.stats?.activeLoans || 0}</h3>
-                        <p className="text-slate-500 uppercase text-xs font-bold tracking-wider">Active Loans</p>
+                    <div className="staff-panel-card">
+                        <CheckCircle size={32} className="text-purple" />
+                        <h3>{stats?.stats?.activeLoans || 0}</h3>
+                        <p className="staff-panel-label">Active Loans</p>
                     </div>
 
-                    <div className="panel-card p-6 flex flex-col items-center text-center">
-                        <Wallet size={32} className="text-emerald-500 mb-2" />
-                        <h3 className="text-2xl font-bold text-slate-800">₹{stats?.stats?.outstandingAmount?.toLocaleString() || 0}</h3>
-                        <p className="text-slate-500 uppercase text-xs font-bold tracking-wider">Total Outstanding</p>
+                    <div className="staff-panel-card">
+                        <Wallet size={32} className="text-emerald" />
+                        <h3>₹{stats?.stats?.outstandingAmount?.toLocaleString() || 0}</h3>
+                        <p className="staff-panel-label">Total Outstanding</p>
                     </div>
 
-                    <div className="panel-card p-6 flex flex-col items-center text-center">
-                        <DollarSign size={32} className="text-amber-500 mb-2" />
-                        <h3 className="text-2xl font-bold text-slate-800">₹{stats?.today?.interestCollected || 0}</h3>
-                        <p className="text-slate-500 uppercase text-xs font-bold tracking-wider">Interest Today</p>
+                    <div className="staff-panel-card">
+                        <DollarSign size={32} className="text-amber" />
+                        <h3>₹{stats?.today?.interestCollected || 0}</h3>
+                        <p className="staff-panel-label">Interest Today</p>
                     </div>
 
                 </div>
             </div>
 
-            {/* COMMON ACTIONS */}
-            <div className="panel-card quick-actions">
+            {/* <div className="panel-card quick-actions">
                 <div className="panel-header">
                     <h2 className="panel-title">Staff Actions</h2>
                 </div>
@@ -130,8 +128,8 @@ const StaffDashboard = () => {
                         <span>Expense/Voucher</span>
                         <DollarSign size={18} />
                     </div>
-                </div>
-            </div>
+                </div> 
+            </div>*/}
         </div>
     );
 };

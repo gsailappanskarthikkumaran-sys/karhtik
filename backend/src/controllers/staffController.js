@@ -16,7 +16,7 @@ const getAllStaff = async (req, res) => {
 // @route   POST /api/staff
 // @access  Private/Admin
 const addStaff = async (req, res) => {
-    const { username, password, fullName } = req.body;
+    const { username, password, fullName, address, phoneNumber, idProofNumber } = req.body;
 
     try {
         const userExists = await User.findOne({ username });
@@ -28,6 +28,9 @@ const addStaff = async (req, res) => {
             username,
             password,
             fullName,
+            address,
+            phoneNumber,
+            idProofNumber,
             role: 'staff'
         });
 
@@ -57,6 +60,9 @@ const updateStaff = async (req, res) => {
 
         user.fullName = req.body.fullName || user.fullName;
         user.username = req.body.username || user.username;
+        user.address = req.body.address || user.address;
+        user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+        user.idProofNumber = req.body.idProofNumber || user.idProofNumber;
 
         if (req.body.password) {
             user.password = req.body.password;

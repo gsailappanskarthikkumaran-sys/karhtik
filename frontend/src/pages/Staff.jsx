@@ -94,7 +94,7 @@ const Staff = () => {
                                         className="btn-delete"
                                         onClick={() => handleDelete(member._id)}
                                     >
-                                        <Trash2 size={16} /> Remove Access
+                                        <Trash2 size={16} /> Remove
                                     </button>
                                 </div>
                             </div>
