@@ -5,7 +5,11 @@ import User from '../models/User.js';
 // @access  Private/Admin
 const getAllStaff = async (req, res) => {
     try {
-        const staff = await User.find({ role: 'staff' }).select('-password');
+        const query = { role: 'staff' };
+        if (req.query.branch) {
+            query.branch = req.query.branch;
+        }
+        const staff = await User.find(query).select('-password').populate('branch', 'name');
         res.json(staff);
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
@@ -17,16 +21,16 @@ const getAllStaff = async (req, res) => {
 // @route   POST /api/staff
 // @access  Private/Admin
 const addStaff = async (req, res) => {
-    const { fullName, address, phoneNumber, idProofNumber, branch, email } = req.body;
+    const { fullName, address, phoneNumber, idProofNumber, branch, email, username, password } = req.body;
 
     try {
-        // Auto-generate credentials
-        const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-        const username = `STF${randomSuffix}`;
-        const password = Math.random().toString(36).slice(-8); // 8 char random string
-
-        const userExists = await User.findOne({ email });
+        const userExists = await User.findOne({ username });
         if (userExists) {
+            return res.status(400).json({ message: 'User with this username already exists' });
+        }
+
+        const emailExists = await User.findOne({ email });
+        if (emailExists) {
             return res.status(400).json({ message: 'User with this email already exists' });
         }
 
@@ -43,14 +47,12 @@ const addStaff = async (req, res) => {
         });
 
         if (user) {
-            // Return credentials to Admin
             res.status(201).json({
                 _id: user._id,
                 username: user.username,
                 fullName: user.fullName,
                 role: user.role,
-                branch: user.branch,
-                generatedPassword: password // Only returned once
+                branch: user.branch
             });
         }
     } catch (error) {

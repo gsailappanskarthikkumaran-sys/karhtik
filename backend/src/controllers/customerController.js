@@ -37,7 +37,8 @@ const createCustomer = async (req, res) => {
             photo: photoPath,
             aadharCard: aadharCardPath,
             panCard: panCardPath,
-            createdBy: req.user._id
+            createdBy: req.user._id,
+            branch: req.user.branch // Associate Customer with Branch
         });
 
         res.status(201).json(customer);
@@ -50,7 +51,12 @@ const createCustomer = async (req, res) => {
 
 const getCustomers = async (req, res) => {
     try {
-        const customers = await Customer.find({}).sort({ createdAt: -1 });
+        let query = {};
+        if (req.user.role === 'staff' && req.user.branch) {
+            query.branch = req.user.branch;
+        }
+
+        const customers = await Customer.find(query).sort({ createdAt: -1 });
         res.json(customers);
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
@@ -61,7 +67,15 @@ const getCustomers = async (req, res) => {
 const getCustomerById = async (req, res) => {
     try {
         const customer = await Customer.findById(req.params.id);
+
         if (customer) {
+            // Access Control
+            if (req.user.role === 'staff' && req.user.branch) {
+                // strict check: if customer has no branch OR mismatch
+                if (!customer.branch || customer.branch.toString() !== req.user.branch.toString()) {
+                    return res.status(403).json({ message: 'Not authorized to view this customer' });
+                }
+            }
             res.json(customer);
         } else {
             res.status(404).json({ message: 'Customer not found' });

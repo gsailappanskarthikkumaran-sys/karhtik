@@ -32,7 +32,12 @@ const Sidebar = () => {
 
         ...(isAdmin ? [
             { name: 'Masters', path: '/masters', icon: <Settings size={20} /> },
-            { name: 'Branches', path: '/branches', icon: <GitBranch size={20} /> }
+            { name: 'Branches', path: '/branches', icon: <GitBranch size={20} /> },
+        ] : []),
+
+        // Staff sees "My Branch" if they have one assigned
+        ...(!isAdmin && user?.branch ? [
+            { name: 'My Branch', path: `/branches/${user.branch}`, icon: <GitBranch size={20} /> }
         ] : []),
     ];
 

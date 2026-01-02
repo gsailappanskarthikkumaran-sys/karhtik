@@ -70,6 +70,7 @@ const createLoan = async (req, res) => {
             interestRate: scheme.interestRate,
             dueDate: new Date(Date.now() + scheme.tenureMonths * 30 * 24 * 60 * 60 * 1000),
             createdBy: req.user._id,
+            branch: req.user.branch, // Assign Loan to User's Branch
             currentBalance: requestedLoanAmount
         });
 
@@ -111,7 +112,16 @@ const createLoan = async (req, res) => {
 // @access  Private
 const getLoans = async (req, res) => {
     try {
-        const loans = await Loan.find()
+        let query = {};
+
+        // Branch Filtering
+        if (req.user.role === 'staff' && req.user.branch) {
+            query.branch = req.user.branch;
+        } else if (req.query.branch) {
+            query.branch = req.query.branch; // Allow admin to filter
+        }
+
+        const loans = await Loan.find(query)
             .populate('customer', 'name phone')
             .populate('scheme', 'schemeName interestRate')
             .sort({ createdAt: -1 });
@@ -154,12 +164,18 @@ const getLoanById = async (req, res) => {
 // @access  Private
 const getDashboardStats = async (req, res) => {
     try {
-        const totalLoans = await Loan.countDocuments();
-        const activeLoans = await Loan.countDocuments({ status: { $ne: 'closed' } });
-        const overdueLoans = await Loan.countDocuments({ status: 'overdue' }); // Assuming overdue status handled by cron
+        let query = {};
+        if (req.user.role === 'staff' && req.user.branch) {
+            query.branch = req.user.branch;
+        }
+
+        const totalLoans = await Loan.countDocuments(query);
+        const activeLoans = await Loan.countDocuments({ ...query, status: { $ne: 'closed' } });
+        const overdueLoans = await Loan.countDocuments({ ...query, status: 'overdue' }); // Assuming overdue status handled by cron
 
         // Aggregations
         const totals = await Loan.aggregate([
+            { $match: query }, // Filter Match First
             {
                 $group: {
                     _id: null,
@@ -170,6 +186,7 @@ const getDashboardStats = async (req, res) => {
         ]);
 
         const schemeStats = await Loan.aggregate([
+            { $match: query },
             {
                 $lookup: {
                     from: 'schemes',
@@ -193,7 +210,7 @@ const getDashboardStats = async (req, res) => {
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
         const monthlyTrend = await Loan.aggregate([
-            { $match: { createdAt: { $gte: sixMonthsAgo } } },
+            { $match: { ...query, createdAt: { $gte: sixMonthsAgo } } },
             {
                 $group: {
                     _id: { $month: "$createdAt" },
@@ -204,7 +221,7 @@ const getDashboardStats = async (req, res) => {
             { $sort: { "_id": 1 } }
         ]);
 
-        const recentLoans = await Loan.find()
+        const recentLoans = await Loan.find(query)
             .sort({ createdAt: -1 })
             .limit(5)
             .populate('customer', 'name');
@@ -245,18 +262,34 @@ const getStaffDashboardStats = async (req, res) => {
         const todayEnd = new Date();
         todayEnd.setHours(23, 59, 59, 999);
 
+        let query = {};
+        if (req.user.role === 'staff' && req.user.branch) {
+            query.branch = req.user.branch;
+        }
+
         // 1. Today's Loans Issued
         const loansIssuedToday = await Loan.find({
+            ...query,
             createdAt: { $gte: todayStart, $lte: todayEnd }
         });
         const loansIssuedCount = loansIssuedToday.length;
         const loansIssuedAmount = loansIssuedToday.reduce((acc, loan) => acc + loan.loanAmount, 0);
 
-        // 2. Payments Received Today
+        // 2. Payments Received Today (Needs to filter by Loan's Branch)
         const paymentsToday = await Payment.aggregate([
             {
+                $lookup: {
+                    from: 'loans',
+                    localField: 'loan',
+                    foreignField: '_id',
+                    as: 'loanDetails'
+                }
+            },
+            { $unwind: '$loanDetails' },
+            {
                 $match: {
-                    paymentDate: { $gte: todayStart, $lte: todayEnd }
+                    paymentDate: { $gte: todayStart, $lte: todayEnd },
+                    ...(query.branch ? { 'loanDetails.branch': query.branch } : {})
                 }
             },
             {
@@ -276,10 +309,10 @@ const getStaffDashboardStats = async (req, res) => {
         const interestCollectedToday = paymentsToday[0]?.interestAmount || 0;
 
         // 3. Quick Stats (Active, Outstanding)
-        const totalActive = await Loan.countDocuments({ status: { $ne: 'closed' } });
+        const totalActive = await Loan.countDocuments({ ...query, status: { $ne: 'closed' } });
 
         const outstandingAgg = await Loan.aggregate([
-            { $match: { status: { $ne: 'closed' } } },
+            { $match: { ...query, status: { $ne: 'closed' } } },
             { $group: { _id: null, total: { $sum: "$currentBalance" } } }
         ]);
         const totalOutstanding = outstandingAgg[0]?.total || 0;
@@ -289,6 +322,7 @@ const getStaffDashboardStats = async (req, res) => {
         dueThreshold.setDate(dueThreshold.getDate() + 7); // Next 7 days
 
         const pendingRedemptions = await Loan.countDocuments({
+            ...query,
             status: { $ne: 'closed' },
             dueDate: { $lte: dueThreshold }
         });

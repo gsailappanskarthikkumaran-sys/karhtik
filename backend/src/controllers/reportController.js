@@ -14,18 +14,32 @@ const getDayBook = async (req, res) => {
         const end = new Date(targetDate);
         end.setHours(23, 59, 59, 999);
 
+        let query = {};
+        if (req.user.role === 'staff' && req.user.branch) {
+            query.branch = req.user.branch;
+        }
+
         // 1. Loans Issued (Money Out)
         const loans = await Loan.find({
+            ...query,
             createdAt: { $gte: start, $lte: end }
         }).select('loanId loanAmount customer createdAt').populate('customer', 'name');
 
         // 2. Payments Received (Money In)
-        const payments = await Payment.find({
-            paidAt: { $gte: start, $lte: end }
-        }).select('amount type loanId paidAt');
+        // Need to filter payments linked to loans of this branch
+        let paymentQuery = { paidAt: { $gte: start, $lte: end } };
+
+        // If staff, first find all loans for this branch, then find payments for those loans
+        if (query.branch) {
+            const branchLoanIds = await Loan.find({ branch: query.branch }).distinct('_id');
+            paymentQuery.loan = { $in: branchLoanIds };
+        }
+
+        const payments = await Payment.find(paymentQuery).select('amount type loanId paidAt');
 
         // 3. Vouchers (Money In/Out)
         const vouchers = await Voucher.find({
+            ...query,
             date: { $gte: start, $lte: end }
         });
 
@@ -101,22 +115,38 @@ const getDayBook = async (req, res) => {
 // @route   GET /api/reports/financials
 const getFinancialStats = async (req, res) => {
     try {
+        let query = {};
+        if (req.user.role === 'staff' && req.user.branch) {
+            query.branch = req.user.branch;
+        }
+
         // --- BALANCE SHEET ITEMS ---
         // 1. Assets: Outstanding Loans (Principal)
-        const activeLoans = await Loan.find({ status: { $ne: 'closed' } });
-        const outstandingPrincipal = activeLoans.reduce((acc, l) => acc + l.loanAmount, 0); // Simplified (doesn't subtract partial principal payments yet)
+        const activeLoans = await Loan.find({ ...query, status: { $ne: 'closed' } });
+        const outstandingPrincipal = activeLoans.reduce((acc, l) => acc + l.loanAmount, 0);
 
         // 2. Cash In Hand (Calculated from ALL time history - simplified)
-        // This is expensive: Start with 0 and sum everything. Ideally, we store "Opening Balance".
-        // For now, let's just calculate "Lifetime Net Cash Flow"
-        const allPayments = await Payment.aggregate([{ $group: { _id: null, total: { $sum: "$amount" } } }]);
-        const allLoans = await Loan.aggregate([{ $group: { _id: null, total: { $sum: "$loanAmount" } } }]);
+        // Filter Payments by branch
+        let paymentMatch = {};
+        if (query.branch) {
+            const branchLoanIds = await Loan.find({ branch: query.branch }).distinct('_id');
+            paymentMatch.loan = { $in: branchLoanIds };
+        }
+
+        const allPayments = await Payment.aggregate([
+            { $match: paymentMatch },
+            { $group: { _id: null, total: { $sum: "$amount" } } }
+        ]);
+        const allLoans = await Loan.aggregate([
+            { $match: query },
+            { $group: { _id: null, total: { $sum: "$loanAmount" } } }
+        ]);
         const allExpenseVouchers = await Voucher.aggregate([
-            { $match: { type: 'expense' } },
+            { $match: { ...query, type: 'expense' } },
             { $group: { _id: null, total: { $sum: "$amount" } } }
         ]);
         const allIncomeVouchers = await Voucher.aggregate([
-            { $match: { type: 'income' } },
+            { $match: { ...query, type: 'income' } },
             { $group: { _id: null, total: { $sum: "$amount" } } }
         ]);
 
@@ -124,33 +154,12 @@ const getFinancialStats = async (req, res) => {
         const totalOut = (allLoans[0]?.total || 0) + (allExpenseVouchers[0]?.total || 0);
         const cashInHand = totalIn - totalOut;
 
-        // --- P&L ITEMS (This Month/Year - Let's do Lifetime for simplicity first or query params) ---
-        // Income: Interest Received (from Payments type='interest' - need to refine Payment model to distinguishing principal/interest if not already)
-        // For now, let's assume all 'Profit' comes from (Total Payments - Principal Repaid) + Income Vouchers. 
-        // Or strictly: Simple Interest collected.
-
-        // Let's rely on Vouchers for Expense and Income
+        // --- P&L ITEMS ---
         const totalExpenses = allExpenseVouchers[0]?.total || 0;
         const totalOtherIncome = allIncomeVouchers[0]?.total || 0;
 
-        // Interest Income calculation: (Total Payment Amount) - (Principal Recovered).
-        // Since we don't strictly track "Principal Recovered" vs "Interest" in simple Payment model without splits:
-        // We will approximate: Interest Income = Payment Amount - (Loan Amount Reduction). 
-        // Actually, let's just use "Interest Only" payments if distinguishing, or just sum everything up for "Revenue"
-        // Better P&L for Pawn Shop:
-        // Revenue = Interest Received.
-        // Expense = Operating Expenses.
-
-        // Re-fetching payments to separate Interest if possible. Accessing `details` or just summing raw.
-        // Assuming `Payment` has `type`: 'interest' | 'principal' | 'full' 
-
-        // Let's return the raw aggregates
-        // --- P&L ITEMS ---
-        // Income is strictly: Interest Payments + Income Vouchers
-        // (Principal payments are asset conversion, not income)
-
         const interestIncome = await Payment.aggregate([
-            { $match: { type: 'interest' } },
+            { $match: { ...paymentMatch, type: 'interest' } },
             { $group: { _id: null, total: { $sum: "$amount" } } }
         ]);
 

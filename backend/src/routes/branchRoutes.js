@@ -1,5 +1,5 @@
 import express from 'express';
-import { getBranches, addBranch, deleteBranch } from '../controllers/branchController.js';
+import { getBranches, getBranchById, addBranch, deleteBranch } from '../controllers/branchController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -9,6 +9,7 @@ router.route('/')
     .post(protect, admin, addBranch);
 
 router.route('/:id')
+    .get(protect, getBranchById)
     .delete(protect, admin, deleteBranch);
 
 export default router;

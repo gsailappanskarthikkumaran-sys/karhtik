@@ -13,7 +13,8 @@ const addVoucher = async (req, res) => {
             amount,
             description,
             date: date || new Date(),
-            createdBy: req.user._id
+            createdBy: req.user._id,
+            branch: req.user.branch // Auto-assign branch
         });
 
         res.status(201).json(voucher);
@@ -29,6 +30,11 @@ const getVouchers = async (req, res) => {
     try {
         const { date } = req.query;
         let query = {};
+
+        // Branch Filtering
+        if (req.user.role === 'staff' && req.user.branch) {
+            query.branch = req.user.branch;
+        }
 
         if (date) {
             const start = new Date(date);

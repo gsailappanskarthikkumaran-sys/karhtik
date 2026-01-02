@@ -23,6 +23,7 @@ import Auctions from './pages/Auctions';
 import Contact from './pages/Contact';
 import About from './pages/About';
 import Branches from './pages/Branches';
+import BranchDetails from './pages/BranchDetails';
 
 const App = () => {
   const { loading } = useAuth();
@@ -56,6 +57,7 @@ const App = () => {
         <Route path="/staff/add" element={<AddStaff />} />
         <Route path="/staff/edit/:id" element={<AddStaff />} />
         <Route path="/branches" element={<Branches />} />
+        <Route path="/branches/:id" element={<BranchDetails />} />
       </Route>
     </Routes>
   );

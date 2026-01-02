@@ -95,7 +95,11 @@ const Branches = () => {
                         <div className="branch-param-grid">
                             {branches.map((branch) => (
                                 <div key={branch._id} className="branch-param-card">
-                                    <div className="branch-param-info">
+                                    <div
+                                        className="branch-param-info"
+                                        onClick={() => navigate(`/branches/${branch._id}`)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                                             <Building2 size={16} className="text-primary" />
                                             <span className="branch-param-name">{branch.name}</span>
@@ -108,7 +112,7 @@ const Branches = () => {
                                     <div className="branch-actions" style={{ display: 'flex', gap: '8px' }}>
                                         <button
                                             className="btn-icon"
-                                            onClick={() => navigate(`/staff/add?branchId=${branch._id}`)}
+                                            onClick={(e) => { e.stopPropagation(); navigate(`/staff/add?branchId=${branch._id}`); }}
                                             title="Add Staff"
                                             style={{ color: '#0f172a' }}
                                         >

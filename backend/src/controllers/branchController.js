@@ -5,8 +5,40 @@ import Branch from '../models/Branch.js';
 // @access  Private/Admin
 const getBranches = async (req, res) => {
     try {
-        const branches = await Branch.find({});
+        let query = {};
+        // If staff, restrict to their own branch
+        if (req.user.role === 'staff' && req.user.branch) {
+            query._id = req.user.branch;
+        } else if (req.user.role === 'staff' && !req.user.branch) {
+            // Staff with no branch sees nothing (or error)
+            return res.json([]);
+        }
+
+        const branches = await Branch.find(query);
         res.json(branches);
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+// @desc    Get single branch
+// @route   GET /api/branches/:id
+// @access  Private/Admin
+const getBranchById = async (req, res) => {
+    try {
+        // Access Control for Staff
+        if (req.user.role === 'staff') {
+            if (!req.user.branch || req.user.branch.toString() !== req.params.id) {
+                return res.status(403).json({ message: 'Not authorized to view this branch' });
+            }
+        }
+
+        const branch = await Branch.findById(req.params.id);
+        if (branch) {
+            res.json(branch);
+        } else {
+            res.status(404).json({ message: 'Branch not found' });
+        }
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
     }
@@ -54,4 +86,4 @@ const deleteBranch = async (req, res) => {
     }
 };
 
-export { getBranches, addBranch, deleteBranch };
+export { getBranches, getBranchById, addBranch, deleteBranch };
