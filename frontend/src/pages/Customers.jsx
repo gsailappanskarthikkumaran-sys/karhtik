@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 import { Search, Plus, User, Phone, Mail, MapPin, ChevronRight, Filter } from 'lucide-react';
 import './Customers.css';
 
@@ -9,13 +10,38 @@ const Customers = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    const [branches, setBranches] = useState([]);
+    const [selectedBranch, setSelectedBranch] = useState('');
+    const { user } = useAuth(); // Assuming useAuth is available from context
+
+    // Create a mock user if useAuth is not actually imported or available yet to prevent crash, 
+    // but ideally we should import useAuth. 
+    // Wait, useAuth is NOT imported in the original file. I need to import it.
+
+    useEffect(() => {
+        if (user?.role !== 'staff') {
+            fetchBranches();
+        }
+    }, [user]);
+
     useEffect(() => {
         fetchCustomers();
-    }, []);
+    }, [selectedBranch]);
+
+    const fetchBranches = async () => {
+        try {
+            const { data } = await api.get('/branches');
+            setBranches(data);
+        } catch (error) {
+            console.error("Failed to load branches", error);
+        }
+    };
 
     const fetchCustomers = async () => {
         try {
-            const { data } = await api.get('/customers');
+            const { data } = await api.get('/customers', {
+                params: { branch: selectedBranch }
+            });
             setCustomers(data);
             setLoading(false);
         } catch (error) {
@@ -31,9 +57,32 @@ const Customers = () => {
                     <h1>Customers</h1>
                     <p>Manage KYC and customer profiles</p>
                 </div>
-                <button className="btn-add" onClick={() => window.location.href = '/customers/add'}>
-                    <Plus size={20} strokeWidth={2.5} /> Add New Customer
-                </button>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    {user?.role !== 'staff' && (
+                        <select
+                            className="branch-select"
+                            value={selectedBranch}
+                            onChange={(e) => setSelectedBranch(e.target.value)}
+                            style={{
+                                padding: '0.5rem',
+                                borderRadius: '0.5rem',
+                                border: '1px solid #e2e8f0',
+                                backgroundColor: 'white',
+                                color: '#0f172a',
+                                fontSize: '0.875rem',
+                                outline: 'none'
+                            }}
+                        >
+                            <option value="">All Branches</option>
+                            {branches.map(branch => (
+                                <option key={branch._id} value={branch._id}>{branch.name}</option>
+                            ))}
+                        </select>
+                    )}
+                    <button className="btn-add" onClick={() => window.location.href = '/customers/add'}>
+                        <Plus size={20} strokeWidth={2.5} /> Add New Customer
+                    </button>
+                </div>
             </div>
 
             <div className="customers-card">

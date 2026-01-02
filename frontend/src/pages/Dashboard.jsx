@@ -16,16 +16,30 @@ const Dashboard = () => {
     const { user } = useAuth();
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [branches, setBranches] = useState([]);
+    const [selectedBranch, setSelectedBranch] = useState('');
 
     useEffect(() => {
         if (user?.role !== 'staff') {
+            fetchBranches();
             fetchDashboardStats();
         }
-    }, [user]);
+    }, [user, selectedBranch]);
+
+    const fetchBranches = async () => {
+        try {
+            const { data } = await api.get('/branches');
+            setBranches(data);
+        } catch (error) {
+            console.error("Failed to load branches", error);
+        }
+    };
 
     const fetchDashboardStats = async () => {
         try {
-            const { data } = await api.get('/loans/stats/dashboard');
+            const { data } = await api.get('/loans/stats/dashboard', {
+                params: { branch: selectedBranch }
+            });
             setStats(data);
             setLoading(false);
         } catch (error) {
@@ -34,13 +48,13 @@ const Dashboard = () => {
         }
     };
 
-   
+
     if (user?.role === 'staff') {
         return <StaffDashboard />;
     }
 
-   
-    const COLORS = ['#ca8a04', '#3b82f6', '#22c55e', '#a855f7', '#ef4444']; 
+
+    const COLORS = ['#ca8a04', '#3b82f6', '#22c55e', '#a855f7', '#ef4444'];
 
     if (loading) {
         return (
@@ -63,9 +77,32 @@ const Dashboard = () => {
                     <h1>Dashboard</h1>
                     <p>Welcome back, <span className="highlight-user">{user?.fullName}</span></p>
                 </div>
-                <div className="date-badge">
-                    <Calendar size={14} />
-                    {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                <div className="dashboard-actions" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    {user?.role !== 'staff' && (
+                        <select
+                            className="branch-select"
+                            value={selectedBranch}
+                            onChange={(e) => setSelectedBranch(e.target.value)}
+                            style={{
+                                padding: '0.5rem',
+                                borderRadius: '0.5rem',
+                                border: '1px solid #e2e8f0',
+                                backgroundColor: 'white',
+                                color: '#0f172a',
+                                fontSize: '0.875rem',
+                                outline: 'none'
+                            }}
+                        >
+                            <option value="">All Branches</option>
+                            {branches.map(branch => (
+                                <option key={branch._id} value={branch._id}>{branch.name}</option>
+                            ))}
+                        </select>
+                    )}
+                    <div className="date-badge">
+                        <Calendar size={14} />
+                        {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </div>
                 </div>
             </div>
 

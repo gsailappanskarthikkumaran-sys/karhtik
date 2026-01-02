@@ -167,6 +167,8 @@ const getDashboardStats = async (req, res) => {
         let query = {};
         if (req.user.role === 'staff' && req.user.branch) {
             query.branch = req.user.branch;
+        } else if (req.query.branch) {
+            query.branch = req.query.branch;
         }
 
         const totalLoans = await Loan.countDocuments(query);
