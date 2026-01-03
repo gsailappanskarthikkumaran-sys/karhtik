@@ -22,19 +22,23 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (username, password) => {
         try {
+            console.log("AuthContext: Sending login request");
             const response = await api.post('/auth/login', { username, password });
-            console.log("Login Response:", response);
+            console.log("AuthContext: Login Response received:", response);
             const { data } = response;
 
             if (!data) {
+                console.error("AuthContext: No data received from login API");
                 throw new Error("No data received from login API");
             }
 
+            console.log("AuthContext: User data received:", data);
             localStorage.setItem('user', JSON.stringify(data));
             setUser(data);
+            console.log("AuthContext: User state updated");
             return data;
         } catch (error) {
-            console.error("Login API Error:", error);
+            console.error("AuthContext: Login API Error:", error);
             throw error;
         }
     };

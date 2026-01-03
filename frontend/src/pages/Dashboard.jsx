@@ -20,9 +20,13 @@ const Dashboard = () => {
     const [selectedBranch, setSelectedBranch] = useState('');
 
     useEffect(() => {
+        console.log("Dashboard: Mounted. User:", user);
         if (user?.role !== 'staff') {
+            console.log("Dashboard: Fetching branches and stats");
             fetchBranches();
             fetchDashboardStats();
+        } else {
+            console.log("Dashboard: User is staff, skipping admin stats");
         }
     }, [user, selectedBranch]);
 
@@ -37,13 +41,15 @@ const Dashboard = () => {
 
     const fetchDashboardStats = async () => {
         try {
+            console.log("Dashboard: Fetching stats for branch:", selectedBranch);
             const { data } = await api.get('/loans/stats/dashboard', {
                 params: { branch: selectedBranch }
             });
+            console.log("Dashboard: Stats received:", data);
             setStats(data);
             setLoading(false);
         } catch (error) {
-            console.error("Failed to load stats", error);
+            console.error("Dashboard: Failed to load stats", error);
             setLoading(false);
         }
     };
